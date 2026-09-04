@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { cities } from '../data/professions';
+
+const grouped = cities.reduce<Record<string, typeof cities>>((acc, c) => {
+  const letter = c.name[0].toUpperCase();
+  (acc[letter] ??= []).push(c);
+  return acc;
+}, {});
+const letters = Object.keys(grouped).sort((a, b) => a.localeCompare(b, 'ru'));
+---
+
+<BaseLayout
+  title="Работа в городах России — все города"
+  description={`Работа во всех городах России: курьер, водитель, кладовщик, мобильный банкир и другие профессии. Выберите свой город.`}
+>
+  <div class="container">
+    <nav class="breadcrumbs" aria-label="Хлебные крошки">
+      <a href="/">Главная</a>
+      <span class="sep">/</span>
+      <span>Города</span>
+    </nav>
+
+    <header class="prof-header reveal" style="grid-template-columns: auto 1fr;">
+      <div class="prof-logo" style="background:linear-gradient(135deg,#2f5bf6,#7c3aed)" aria-hidden="true">🗺️</div>
+      <div class="prof-title">
+        <h1>Работа в городах России</h1>
+        <div class="prof-tags">
+          <span>{cities.length} городов</span>
+          <span>Вся Россия</span>
+        </div>
+        <p style="color:var(--muted);max-width:640px;margin-top:6px">
+          Выберите город — откроется каталог предложений и профессий. Оформление онлайн по ссылке партнёра, без визита в офис.
+        </p>
+      </div>
+    </header>
+
+    <nav class="alpha-nav reveal" aria-label="Перейти к букве">
+      {letters.map((l) => <a class="chip" href={`#letter-${l}`}>{l}</a>)}
+    </nav>
+
+    <section class="section" style="padding-top: 8px;">
+      {
+        letters.map((letter) => (
+          <div class="city-letter-block reveal">
+            <h2 id={`letter-${letter}`} class="city-letter-title">{letter}</h2>
+            <div class="city-list">
+              {grouped[letter].map((c) => (
+                <a class="city-item" href={`/${c.slug}/`}>
+                  <span class="city-item-name">{c.name}</span>
+                  <span class="city-item-arrow">→</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </section>
+  </div>
+</BaseLayout>

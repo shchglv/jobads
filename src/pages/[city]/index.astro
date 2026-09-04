@@ -1,0 +1,112 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import JobCard from '../../components/JobCard.astro';
+import OfferCard from '../../components/OfferCard.astro';
+import { bySlug, cities, cityBySlug, groupOffers, offers, offerCoversCity, professions, site } from '../../data/professions';
+import type { GetStaticPaths } from 'astro';
+
+export function getStaticPaths() {
+  return cities.map((city) => ({ params: { city: city.slug } }));
+}
+
+const { city: citySlug } = Astro.params;
+const city = cityBySlug(citySlug!);
+if (!city) return Astro.redirect('/404');
+
+const neighbors = cities.filter((c) => c.slug !== city.slug).slice(0, 6);
+const cityOffers = groupOffers(offers.filter((o) => offerCoversCity(o, city.name)));
+
+const jsonld = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: `Работа в ${city.name_in} — вакансии и предложения`,
+  about: { '@type': 'Place', name: city.name, address: { '@type': 'PostalAddress', addressCountry: 'RU' } },
+});
+---
+
+<BaseLayout
+  title={`Работа в ${city.name_in} — вакансии и предложения`}
+  description={`Работа в ${city.name_in}: курьер, водитель, кладовщик и другие профессии. Оформитесь онлайн по ссылке партнёра и выходите на смену.`}
+  jsonld={`<script type="application/ld+json">${jsonld}</script>`}
+  cityName={city.name}
+>
+  <div class="container">
+    <nav class="breadcrumbs" aria-label="Хлебные крошки">
+      <a href="/">Главная</a>
+      <span class="sep">/</span>
+      <span>{city.name}</span>
+    </nav>
+
+    <header class="prof-header reveal" style="grid-template-columns: auto 1fr;">
+      <div class="prof-logo" style="background:linear-gradient(135deg,#2f5bf6,#7c3aed)" aria-hidden="true">🏙️</div>
+      <div class="prof-title">
+        <h1>Работа в {city.name_in}</h1>
+        <div class="prof-tags">
+          <span>{professions.length} профессий</span>
+          <span>{cityOffers.length} предложений с откликом</span>
+          <span>Россия</span>
+        </div>
+        <div class="prof-salary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Оформитесь онлайн и выходите на смену
+        </div>
+      </div>
+    </header>
+
+    <section class="section" style="padding-top: 8px;">
+      <div class="section-head reveal" style="text-align:left;margin:0 0 24px;max-width:none">
+        <h2 style="font-size:1.5rem">Предложения с быстрым откликом в {city.name_in}</h2>
+        <p>Перейдите по ссылке партнёра, заполните анкету — и выходите на первые заказы уже на следующий день.</p>
+      </div>
+      <div class="offers-grid">
+        {cityOffers.map((o) => <OfferCard offer={o} />)}
+      </div>
+      {
+        cityOffers.length === 0 && (
+          <p style="color:var(--muted)">В {city.name_in} сейчас нет предложений с прямым откликом — загляните позже или посмотрите профессии ниже.</p>
+        )
+      }
+    </section>
+
+    <section class="section section-alt">
+      <div class="container">
+        <div class="section-head reveal" style="text-align:left;margin:0 0 24px;max-width:none">
+          <h2 style="font-size:1.5rem">Профессии в {city.name_in}</h2>
+          <p>У каждой профессии своя страница с условиями, требованиями и ссылками на отклик.</p>
+        </div>
+        <div class="jobs-grid">
+          {professions.map((job) => <JobCard job={job} city={city.name} />)}
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head reveal" style="text-align:left;margin:0 0 24px;max-width:none">
+          <h2 style="font-size:1.5rem">Работа рядом в других городах</h2>
+          <p>Выберите ближайший город — предложения и профессии те же, условия уточняйте по ссылке.</p>
+        </div>
+        <div class="city-chips">
+          {neighbors.map((c) => (
+            <a class="chip" href={`/${c.slug}/`}>🏙️ {c.name}</a>
+          ))}
+          <a class="chip" href="/#catalog">Все предложения →</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt" style="padding-top:40px">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="kicker">FAQ</span>
+          <h2>Вопросы о работе в {city.name_in}</h2>
+        </div>
+        <div class="faq-list">
+          <details class="faq-item"><summary>Как быстро можно выйти на работу в {city.name_in}?</summary><div class="faq-answer">Обычно оформление занимает один день: перейдите по ссылке партнёра, заполните анкету онлайн и пройдите короткое обучение. На первую смену можно выйти уже на следующий день.</div></details>
+          <details class="faq-item"><summary>Какие документы нужны для работы?</summary><div class="faq-answer">Гражданам России достаточно паспорта и СНИЛС; для некоторых направлений нужна медицинская книжка. Точный список документов зависит от работодателя и уточняется при оформлении.</div></details>
+          <details class="faq-item"><summary>Сколько можно заработать в {city.name_in}?</summary><div class="faq-answer">Доход зависит от профессии, графика и количества заказов. Актуальные тарифы и условия смотрите на сайте партнёра — ссылка на отклик есть на каждой странице.</div></details>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

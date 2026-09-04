@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { professions } from '../data/professions';
+---
+
+<BaseLayout
+  title="Все профессии — каталог направлений"
+  description="Все профессии на сайте: курьер, водитель, кладовщик, грузчик, мобильный банкир, клинер и другие направления работы по всей России."
+>
+  <div class="container">
+    <nav class="breadcrumbs" aria-label="Хлебные крошки">
+      <a href="/">Главная</a>
+      <span class="sep">/</span>
+      <span>Профессии</span>
+    </nav>
+
+    <header class="prof-header reveal">
+      <div class="prof-logo" style="background:linear-gradient(135deg,#2f5bf6,#7c3aed)" aria-hidden="true">🧑‍💼</div>
+      <div class="prof-title">
+        <h1>Все профессии</h1>
+        <div class="prof-tags">
+          <span>{professions.length} направлений</span>
+          <span>Вся Россия</span>
+        </div>
+        <p style="color:var(--muted);max-width:640px;margin-top:6px">
+          Выберите направление — на странице каждой профессии условия, требования и ссылка на отклик у работодателя.
+        </p>
+      </div>
+    </header>
+
+    <section class="section" style="padding-top: 8px;">
+      <div class="city-list">
+        {professions.map((p) => (
+          <a class="city-item" href={`/${p.slug}/`}>
+            <span class="city-item-name"><span style="margin-right:8px">{p.emoji}</span>{p.title}</span>
+            <span class="city-item-arrow">→</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>

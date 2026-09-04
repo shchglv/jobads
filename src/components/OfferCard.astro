@@ -1,0 +1,55 @@
+---
+import type { Offer } from '../data/types';
+
+interface Props {
+  offer: Offer;
+}
+
+const { offer } = Astro.props;
+const detailUrl = offer.profession ? `/${offer.profession}/` : null;
+
+const emojiFor = (company: string) => {
+  const map: Record<string, string> = {
+    'Самокат': '🛴', 'HeadHunter': '💼', 'Яндекс Лавка': '🛒', 'ВкусВилл': '🥗',
+    'Onecta': '🧹', 'Voxys': '🎧', 'Burger King': '🍔', 'Тетрика': '📚',
+    'Qlean': '🧽', 'Купер': '📦', 'Яндекс Маркет': '🛍️', 'Альфа-Банк': '🏦',
+    'Яндекс Еда': '🛵', 'Руки': '🤝', 'Т-Банк': '💳', 'Netwrk.ru': '🔗',
+    'Петрович': '🚚',
+  };
+  return map[company] ?? '💼';
+};
+---
+
+<article class="offer-card reveal" data-offer data-category={offer.category ?? 'Другое'} data-search={`${offer.company} ${offer.role} ${offer.geo} ${offer.category ?? ''}`}>
+  <div class="offer-top">
+    <div class="offer-logo" aria-hidden="true">{emojiFor(offer.company)}</div>
+    <span class="badge badge-hot">Активно</span>
+  </div>
+  {
+    detailUrl
+      ? <h3><a href={detailUrl}>{offer.role}</a></h3>
+      : <h3>{offer.role}</h3>
+  }
+  <p class="offer-company">{offer.company}</p>
+  <div class="offer-goal">🎯 {offer.goal}</div>
+  <div class="offer-payout">💰 {offer.payout}</div>
+  <div class="job-tags">
+    <span>📍 {offer.geo}</span>
+    <span>⏳ HOLD {offer.hold} дн.</span>
+  </div>
+  <div class="offer-actions">
+    {
+      detailUrl && (
+        <a class="btn btn-primary" href={detailUrl}>
+          Подробнее
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      )
+    }
+    {
+      offer.link && (
+        <a class="btn btn-ghost" href={offer.link} target="_blank" rel="noopener nofollow">Откликнуться ↗</a>
+      )
+    }
+  </div>
+</article>

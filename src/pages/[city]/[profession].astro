@@ -1,0 +1,178 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { bySlug, cities, cityBySlug, isLiveLink, professions, site } from '../../data/professions';
+import type { GetStaticPaths } from 'astro';
+
+export function getStaticPaths() {
+  return cities.flatMap((city) =>
+    professions.map((job) => ({ params: { city: city.slug, profession: job.slug } }))
+  );
+}
+
+const { city: citySlug, profession: jobSlug } = Astro.params;
+const city = cityBySlug(citySlug!);
+const job = bySlug(jobSlug!);
+if (!city || !job) return Astro.redirect('/404');
+
+const liveLinks = job.links.filter((l) => isLiveLink(l.url));
+const neighbors = cities.filter((c) => c.slug !== city.slug).slice(0, 5);
+const cityJobs = professions.filter((p) => p.slug !== job.slug).slice(0, 4);
+
+const h1 = `Работа ${job.title_ins} в ${city.name_in}`;
+const title = `${job.title} в ${city.name_in} — вакансии и условия`;
+const description = `${h1}: требования, условия и ссылка на отклик. Оформитесь онлайн и выходите на смену — ${site.name}.`;
+
+const jsonld = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'JobPosting',
+      title: `${job.title} — ${city.name}`,
+      description: job.description,
+      employmentType: 'FULL_TIME',
+      hiringOrganization: { '@type': 'Organization', name: site.name },
+      jobLocation: {
+        '@type': 'Place',
+        address: { '@type': 'PostalAddress', addressLocality: city.name, addressCountry: 'RU' },
+      },
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: [
+        { '@type': 'Question', name: `Сколько зарабатывает ${job.title_ins} в ${city.name_in}?`, acceptedAnswer: { '@type': 'Answer', text: `Доход зависит от города, графика и количества заказов. Актуальные тарифы смотрите на сайте партнёра — кнопка отклика на этой странице.` } },
+        { '@type': 'Question', name: `Как устроиться ${job.title_ins} в ${city.name_in}?`, acceptedAnswer: { '@type': 'Answer', text: 'Оформление онлайн: перейдите по ссылке партнёра, заполните анкету и пройдите короткое обучение. Обычно это занимает один день.' } },
+        { '@type': 'Question', name: 'Нужен ли опыт работы?', acceptedAnswer: { '@type': 'Answer', text: job.experience === 'Без опыта' ? 'Нет, опыт не требуется — работодатели обучают на месте.' : `Для этой профессии важно: ${job.experience.toLowerCase()}.` } },
+      ],
+    },
+  ],
+});
+---
+
+<BaseLayout title={title} description={description} jsonld={`<script type="application/ld+json">${jsonld}</script>`} cityName={city.name}>
+  <div class="container">
+    <nav class="breadcrumbs" aria-label="Хлебные крошки">
+      <a href="/">Главная</a>
+      <span class="sep">/</span>
+      <a href={`/${city.slug}/`}>{city.name}</a>
+      <span class="sep">/</span>
+      <span>{job.title}</span>
+    </nav>
+
+    <header class="prof-header reveal">
+      <div class="prof-logo" style={`background:linear-gradient(135deg, hsl(${job.hue} 70% 60%), hsl(${(job.hue + 40) % 360} 70% 50%))`} aria-hidden="true">{job.emoji}</div>
+      <div class="prof-title">
+        <h1>{h1}</h1>
+        <div class="prof-tags">
+          <span>📍 {city.name}</span>
+          <span>{job.schedule}</span>
+          <span>{job.experience}</span>
+        </div>
+        <p style="color:var(--muted);max-width:640px;margin-top:6px">
+          {job.short} Оформиться можно онлайн: заполните анкету по ссылке партнёра и выходите на первую смену — обычно уже на следующий день.
+        </p>
+      </div>
+    </header>
+
+    <div class="prof-body">
+      <main class="prof-main">
+        <section class="prof-block reveal">
+          <h2><span class="h-ico">💡</span>О профессии</h2>
+          <p>{job.description}</p>
+          <p style="margin-top:10px">В {city.name_in} условия и тарифы могут отличаться — актуальные цифры и график выплат смотрите на сайте партнёра по кнопке отклика.</p>
+        </section>
+
+        <section class="prof-block reveal">
+          <h2><span class="h-ico">✅</span>Что нужно от соискателя</h2>
+          <ul class="check-list">
+            {job.requirements.map((item) => (
+              <li>
+                <span class="ck">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section class="prof-block reveal">
+          <h2><span class="h-ico">🎁</span>Условия и преимущества</h2>
+          <ul class="check-list">
+            {job.benefits.map((item) => (
+              <li>
+                <span class="ck">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section class="prof-block reveal">
+          <h2><span class="h-ico">❓</span>Частые вопросы</h2>
+          <div class="faq-list" style="max-width:none">
+            <details class="faq-item"><summary>Сколько зарабатывает {job.title_ins} в {city.name_in}?</summary><div class="faq-answer">Доход зависит от города, графика и количества заказов — у каждой компании свои тарифы. Точные цифры смотрите на сайте партнёра: кнопка отклика на этой странице.</div></details>
+            <details class="faq-item"><summary>Как устроиться {job.title_ins} в {city.name_in}?</summary><div class="faq-answer">Перейдите по ссылке партнёра, заполните анкету онлайн и пройдите короткое обучение — обычно это занимает один день. Официальное оформление по договору ГПХ или самозанятость.</div></details>
+            <details class="faq-item"><summary>Нужен ли опыт работы?</summary><div class="faq-answer">{job.experience === 'Без опыта' ? 'Нет, опыт не требуется — работодатели обучают на месте, первые смены проходят с наставником.' : `Для этой профессии нужно: ${job.experience.toLowerCase()}.`}</div></details>
+            <details class="faq-item"><summary>Когда приходят выплаты?</summary><div class="faq-answer">График выплат зависит от работодателя: ежедневно, еженедельно или два раза в месяц. Условия фиксируются в договоре при оформлении.</div></details>
+          </div>
+        </section>
+      </main>
+
+      <aside class="prof-aside">
+        <div class="apply-card">
+          <div class="apply-ad">Реклама · партнёрская ссылка{site.erid ? ` · erid: ${site.erid}` : ''}</div>
+          <h3>Хочу работать {job.title_ins}</h3>
+          <p>Выберите площадку — вы перейдёте на сайт партнёра и оставите отклик за 2 минуты. Это бесплатно.</p>
+          {
+            liveLinks.length > 0
+              ? liveLinks.map((link) => (
+                <a class="apply-link" href={link.url} target="_blank" rel="noopener nofollow">
+                  <span>🎯 {link.name}</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                </a>
+              ))
+              : <p class="apply-note" style="margin:0;padding:12px 14px;background:rgba(255,255,255,.12);border-radius:10px">Ссылка на отклик появится скоро — работодатель подключается к каталогу.</p>
+          }
+          <p class="apply-note">Переход осуществляется по партнёрской (реферальной) ссылке</p>
+        </div>
+        <div class="info-card">
+          <h4>Кратко о вакансии</h4>
+          <div class="info-row"><span>Город</span><b>{city.name}</b></div>
+          <div class="info-row"><span>Опыт</span><b>{job.experience}</b></div>
+          <div class="info-row"><span>График</span><b>{job.schedule}</b></div>
+          <div class="info-row"><span>Заработок</span><b>{job.salary}</b></div>
+        </div>
+      </aside>
+    </div>
+
+    <section class="section related-section">
+      <div class="related-head">
+        <h2>Другие профессии в {city.name_in}</h2>
+        <a href={`/${city.slug}/`}>Все профессии →</a>
+      </div>
+      <div class="jobs-grid">
+        {cityJobs.map((p) => <a class="job-card" href={`/${city.slug}/${p.slug}/`} style="text-decoration:none">
+          <div class="job-card-top">
+            <div class="job-logo" style={`background:linear-gradient(135deg, hsl(${p.hue} 70% 60%), hsl(${(p.hue + 40) % 360} 70% 50%))`}>{p.emoji}</div>
+          </div>
+          <h3>{p.title} в {city.name_in}</h3>
+          <p class="job-desc">{p.short}</p>
+          <span class="job-link">Подробнее →</span>
+        </a>)}
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="related-head">
+        <h2>Работа {job.title_ins} в других городах</h2>
+      </div>
+      <div class="city-chips">
+        {neighbors.map((c) => (
+          <a class="chip" href={`/${c.slug}/${job.slug}/`}>📍 {c.name}</a>
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>

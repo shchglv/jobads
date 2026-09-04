@@ -1,0 +1,159 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ApplyCard from '../components/ApplyCard.astro';
+import JobCard from '../components/JobCard.astro';
+import { bySlug, cities, related, site, professions } from '../data/professions';
+import type { GetStaticPaths } from 'astro';
+
+export function getStaticPaths() {
+  return professions.map((p) => ({ params: { slug: p.slug } }));
+}
+
+const { slug } = Astro.params;
+const job = bySlug(slug!);
+if (!job) return Astro.redirect('/404');
+
+const rel = related(job.slug);
+const url = new URL(`/${job.slug}/`, Astro.site);
+const jsonld = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'JobPosting',
+  title: job.title,
+  description: job.description,
+  datePosted: new Date().toISOString().slice(0, 10),
+  employmentType: 'FULL_TIME',
+  hiringOrganization: { '@type': 'Organization', name: site.name },
+  jobLocation: {
+    '@type': 'Place',
+    address: { '@type': 'PostalAddress', addressLocality: site.city, addressCountry: 'RU' },
+  },
+  baseSalary: {
+    '@type': 'MonetaryAmount',
+    currency: 'RUB',
+    value: { '@type': 'QuantitativeValue', unitText: 'MONTH', minValue: job.salary_min, maxValue: job.salary_max },
+  },
+});
+---
+
+<BaseLayout title={`${job.title} — работа в ${site.country_in}`} description={job.short} jsonld={`<script type="application/ld+json">${jsonld}</script>`}>
+  <div class="container">
+    <nav class="breadcrumbs" aria-label="Хлебные крошки">
+      <a href="/">Главная</a>
+      <span class="sep">/</span>
+      <span>{job.title}</span>
+    </nav>
+
+    <header class="prof-header reveal">
+      <div class="prof-logo" style={`background:linear-gradient(135deg, hsl(${job.hue} 70% 60%), hsl(${(job.hue + 40) % 360} 70% 50%))`} aria-hidden="true">{job.emoji}</div>
+      <div class="prof-title">
+        <h1>{job.title} — работа в {site.country_in}</h1>
+        <div class="prof-tags">
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            {job.schedule}
+          </span>
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            {job.experience}
+          </span>
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Вся Россия
+          </span>
+          <span>{job.category}</span>
+        </div>
+        <div class="prof-salary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          {job.salary}
+        </div>
+      </div>
+    </header>
+
+    <div class="prof-body">
+      <main class="prof-main">
+        <section class="prof-block reveal">
+          <h2><span class="h-ico">💡</span>О профессии</h2>
+          <p>{job.description}</p>
+        </section>
+
+        <section class="prof-block reveal">
+          <h2><span class="h-ico">✅</span>Что нужно от соискателя</h2>
+          <ul class="check-list">
+            {job.requirements.map((item) => (
+              <li>
+                <span class="ck">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section class="prof-block reveal">
+          <h2><span class="h-ico">📌</span>Чем предстоит заниматься</h2>
+          <ul class="check-list orange">
+            {job.responsibilities.map((item) => (
+              <li>
+                <span class="ck">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section class="prof-block reveal">
+          <h2><span class="h-ico">🎁</span>Условия и преимущества</h2>
+          <ul class="check-list">
+            {job.benefits.map((item) => (
+              <li>
+                <span class="ck">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section class="prof-block reveal">
+          <h2><span class="h-ico">❓</span>Частые вопросы</h2>
+          <div class="faq-list" style="max-width:none">
+            {job.faq.map((item) => (
+              <details class="faq-item">
+                <summary>{item.q}</summary>
+                <div class="faq-answer">{item.a}</div>
+              </details>
+            ))}
+          </div>
+        </section>
+      </main>
+
+      <ApplyCard job={job} />
+    </div>
+
+    <section class="section related-section">
+      <div class="related-head">
+        <h2>Работа {job.title_ins} в городах России</h2>
+        <a href={`/${job.slug}/`}>Все условия →</a>
+      </div>
+      <div class="city-chips">
+        {cities.slice(0, 10).map((c) => (
+          <a class="chip" href={`/${c.slug}/${job.slug}/`}>📍 {c.name}</a>
+        ))}
+      </div>
+    </section>
+
+    <section class="section related-section">
+      <div class="related-head">
+        <h2>Похожие профессии</h2>
+        <a href="/#catalog">Все профессии →</a>
+      </div>
+      <div class="jobs-grid">
+        {rel.map((job) => <JobCard job={job} />)}
+      </div>
+    </section>
+  </div>
+</BaseLayout>

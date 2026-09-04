@@ -1,0 +1,84 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import OfferCard from '../../components/OfferCard.astro';
+import { groupOffers, offers } from '../../data/professions';
+import type { GetStaticPaths } from 'astro';
+
+export const getStaticPaths: GetStaticPaths = () => {
+  const info = {
+    'Яндекс Еда': {
+      emoji: '🛵',
+      text: 'Крупнейший сервис доставки еды в России. Курьеры работают пешком, на велосипедах, самокатах и автомобилях — график выбираете сами, выплаты ежедневно или еженедельно.',
+    },
+    'Яндекс Лавка': {
+      emoji: '🛒',
+      text: 'Сервис экспресс-доставки продуктов. Курьеры доставляют заказы из дарксторов рядом с домом — работа в удобном районе и гибкий график.',
+    },
+    'Альфа-Банк': {
+      emoji: '🏦',
+      text: 'Один из крупнейших частных банков России. Нанимает мобильных банкиров, агентов и менеджеров по работе с клиентами — с официальным оформлением и компенсацией расходов.',
+    },
+    'Qlean': {
+      emoji: '🧹',
+      text: 'Сервис профессиональной уборки. Клинеры сами выбирают заказы и график, доход до 5 000 ₽ за одну уборку. Обучение и инвентарь предоставляются.',
+    },
+  };
+  const slugs = { 'Яндекс Еда': 'yandex-eda', 'Яндекс Лавка': 'yandex-lavka', 'Альфа-Банк': 'alfa-bank', 'Qlean': 'qlean' };
+
+  const seen = new Set();
+  return offers
+    .map((o) => o.company)
+    .filter((c) => !seen.has(c) && seen.add(c))
+    .map((name) => {
+      const meta = info[name] ?? { emoji: '💼', text: '' };
+      return {
+        params: { slug: slugs[name] ?? name.toLowerCase().replace(/\s+/g, '-') },
+        props: { name, emoji: meta.emoji, companyText: meta.text, companyOffers: groupOffers(offers.filter((o) => o.company === name)) },
+      };
+    });
+};
+
+const { name, emoji, companyText, companyOffers } = Astro.props;
+const cityNames = [...new Set(companyOffers.map((o) => o.geo))];
+const n = companyOffers.length;
+const vacancyLabel = n % 10 === 1 && n % 100 !== 11 ? 'вакансия' : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 'вакансии' : 'вакансий';
+---
+
+<BaseLayout
+  title={`${name} — вакансии и работа`}
+  description={`Вакансии ${name}: ${companyOffers.map((o) => o.role).join(', ')}. Оформление онлайн по ссылке, официальное трудоустройство.`}
+>
+  <div class="container">
+    <nav class="breadcrumbs" aria-label="Хлебные крошки">
+      <a href="/">Главная</a>
+      <span class="sep">/</span>
+      <a href="/#catalog">Каталог</a>
+      <span class="sep">/</span>
+      <span>{name}</span>
+    </nav>
+
+    <header class="prof-header reveal">
+      <div class="prof-logo" style="background:linear-gradient(135deg,#2f5bf6,#7c3aed)" aria-hidden="true">{emoji}</div>
+      <div class="prof-title">
+        <h1>Вакансии {name}</h1>
+        <div class="prof-tags">
+          <span>{n} {vacancyLabel}</span>
+          {cityNames.map((g) => <span>📍 {g}</span>)}
+        </div>
+        <p class="company-desc">{companyText}</p>
+      </div>
+    </header>
+
+    <section class="section" style="padding-top: 24px">
+      <div class="offers-grid">
+        {companyOffers.map((offer) => <OfferCard offer={offer} />)}
+      </div>
+
+      <div class="cta-band reveal" style="margin-top: 40px">
+        <h2>Не нашли подходящую вакансию?</h2>
+        <p>Посмотрите все предложения в каталоге — курьер, водитель, склад, банки и другие направления.</p>
+        <a href="/#catalog" class="btn btn-white btn-lg">Открыть каталог</a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

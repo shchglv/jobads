@@ -1,0 +1,44 @@
+---
+import { site, professions, cities, offers } from '../data/professions';
+
+const POPULAR_SLUGS = ['courier', 'storekeeper', 'taxi-driver', 'mobilnyi-bankir'];
+const popularProfessions = POPULAR_SLUGS.map((s) => professions.find((p) => p.slug === s)).filter((p) => p);
+
+const TOP_CITY_SLUGS = ['moskva', 'sankt-peterburg', 'kazan', 'ekaterinburg'];
+const topCities = TOP_CITY_SLUGS.map((s) => cities.find((c) => c.slug === s)).filter((c) => c);
+
+const companies = [...new Set(offers.map((o) => o.company))];
+const COMPANY_SLUGS: Record<string, string> = {
+  'Яндекс Еда': 'yandex-eda',
+  'Яндекс Лавка': 'yandex-lavka',
+  'Альфа-Банк': 'alfa-bank',
+  'Qlean': 'qlean',
+};
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid footer-grid-3">
+      <div class="footer-col">
+        <h4>Профессии</h4>
+        {popularProfessions.map((p) => p && <a href={`/${p.slug}/`}>{p.title}</a>)}
+        <a class="footer-all" href="/professions/">Все профессии →</a>
+      </div>
+      <div class="footer-col">
+        <h4>Компании</h4>
+        {companies.map((c) => <a href={`/company/${COMPANY_SLUGS[c] ?? c.toLowerCase().replace(/\s+/g, '-')}/`}>{c}</a>)}
+        <a class="footer-all" href="/#employers">Все предложения →</a>
+      </div>
+      <div class="footer-col">
+        <h4>Города</h4>
+        {topCities.map((c) => c && <a href={`/${c.slug}/`}>{c.name}</a>)}
+        <a class="footer-all" href="/cities/">Все {cities.length} городов →</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span><a href="/" class="footer-logo">💼 {site.name}</a> © {site.year}</span>
+      <span>Работа по всей России · Переходы по партнёрским (реферальным) ссылкам</span>
+    </div>
+  </div>
+</footer>

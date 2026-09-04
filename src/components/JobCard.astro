@@ -1,0 +1,52 @@
+---
+import type { Profession } from '../data/types';
+import { isLiveLink, site } from '../data/professions';
+
+interface Props {
+  job: Profession;
+  city?: string;
+}
+
+const { job, city = site.country } = Astro.props;
+const gradient = `linear-gradient(135deg, hsl(${job.hue} 70% 60%), hsl(${(job.hue + 40) % 360} 70% 50%))`;
+---
+
+<article class="job-card reveal" data-job data-category={job.category} data-search={`${job.title} ${job.short} ${job.category}`}>
+  <div class="job-card-top">
+    <div class="job-logo" style={`background:${gradient}`} aria-hidden="true">{job.emoji}</div>
+    {
+      job.featured
+        ? <span class="badge badge-hot">Популярно</span>
+        : <span class="badge badge-new">Новое</span>
+    }
+  </div>
+  <h3><a href={`/${job.slug}/`}>{job.title}</a></h3>
+  <div class="job-salary"><span class="up">{job.salary}</span></div>
+  <p class="job-desc">{job.short}</p>
+  <div class="job-tags">
+    <span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      {city}
+    </span>
+    <span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      {job.schedule}
+    </span>
+    <span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      {job.experience}
+    </span>
+    <span>{job.category}</span>
+  </div>
+  <div class="job-card-foot">
+    <a class="job-link" href={`/${job.slug}/`}>
+      Подробнее
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+    {
+      job.links.find((l) => isLiveLink(l.url)) && (
+        <a class="job-apply" href={job.links.find((l) => isLiveLink(l.url))!.url} target="_blank" rel="noopener nofollow">Откликнуться ↗</a>
+      )
+    }
+  </div>
+</article>

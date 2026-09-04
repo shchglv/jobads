@@ -1,0 +1,60 @@
+---
+import { offers, professions, site } from '../data/professions';
+
+const featured = professions.slice(0, 3);
+const hues = [232, 262, 21];
+const grads = hues.map(
+  (h) => `linear-gradient(135deg, hsl(${h} 70% 60%), hsl(${(h + 40) % 360} 70% 50%))`
+);
+---
+
+<section class="hero">
+  <div class="container hero-inner">
+    <div class="hero-text">
+      <span class="hero-badge"><span class="dot"></span> Без опыта · ежедневные выплаты · рядом с домом</span>
+      <h1 set:html={site.hero_h1} />
+      <p class="hero-sub">{site.hero_sub}</p>
+
+      <div class="search-wrap">
+        <div class="search-bar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" data-search placeholder="Профессия, например «курьер»…" aria-label="Поиск профессии" />
+          <button class="btn btn-primary" type="button">Найти</button>
+        </div>
+      </div>
+
+      <div class="hero-tags" style="margin-bottom:0">
+        <span>Популярно:</span>
+        {offers.slice(0, 4).map((o) => <a class="tag" href="#catalog">{o.company}</a>)}
+      </div>
+
+      <div class="hero-stats">
+        <div><b><em>{professions.length}+</em></b><span>профессий</span></div>
+        <div><b><em>1000+</em></b><span>вакансий в день</span></div>
+        <div><b><em>24/7</em></b><span>отклик онлайн</span></div>
+      </div>
+    </div>
+
+    <div class="hero-visual" aria-hidden="true">
+      {
+        featured.map((job, i) => (
+          <div class={`float-card fc-${i + 1}`}>
+            <div class="fc-top">
+              <div class="fc-avatar" style={`background:${grads[i]}`}>{job.emoji}</div>
+              <div>
+                <div class="fc-title">{job.title}</div>
+                <div class="fc-salary"><span class="up">{job.salary}</span></div>
+              </div>
+            </div>
+            <div class="fc-tags">
+              <span>{job.experience}</span>
+              <span>{job.schedule}</span>
+              <span>{job.category}</span>
+            </div>
+            <span class="fc-cta">Смотреть вакансии →</span>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

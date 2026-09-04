@@ -1,0 +1,57 @@
+---
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
+import '@fontsource/inter/600.css';
+import '@fontsource/inter/700.css';
+import '@fontsource/inter/800.css';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../data/professions';
+
+interface Props {
+  title: string;
+  description: string;
+  jsonld?: string;
+  cityName?: string;
+}
+
+const { title, description, jsonld, cityName } = Astro.props;
+const pageTitle = title ? `${title} | ${site.name}` : `${site.name} — ${site.tagline}`;
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#0b0f1e" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    {
+      jsonld && <Fragment set:html={jsonld} />
+    }
+  </head>
+  <body data-city-name={cityName ?? ''}>
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+    <script is:inline>
+      // Предзагрузка темы до отрисовки (без FOUC)
+      try {
+        if (localStorage.getItem('theme') === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch {}
+    </script>
+    <script>
+      import '../scripts/main.ts';
+    </script>
+  </body>
+</html>

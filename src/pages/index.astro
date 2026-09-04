@@ -1,0 +1,277 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import OfferCard from '../components/OfferCard.astro';
+import { OFFER_CATEGORIES, cityBySlug, cities, groupOffers, offers, professions, site } from '../data/professions';
+import raw from '../data/professions.json';
+
+const faqItems = (raw.faq as { q: string; a: string }[]).map((item) => ({
+  ...item,
+  a: item.a.replace('{{CITY}}', site.city),
+}));
+
+// Крупные города для блока на главной
+const TOP_CITY_SLUGS = ['moskva', 'sankt-peterburg', 'novosibirsk', 'ekaterinburg', 'kazan', 'nizhniy-novgorod', 'chelyabinsk', 'krasnoyarsk', 'samara', 'ufa', 'rostov-na-donu', 'krasnodar'];
+const topCities = TOP_CITY_SLUGS.map((s) => cityBySlug(s)).filter((c): c is NonNullable<typeof c> => Boolean(c));
+
+// Компании-работодатели из офферов
+const companyMap = new Map<string, { name: string; emoji: string; slug: string; offers: typeof offers }>();
+const COMPANY_META: Record<string, { emoji: string; slug: string }> = {
+  'Яндекс Еда': { emoji: '🛵', slug: 'yandex-eda' },
+  'Яндекс Лавка': { emoji: '🛒', slug: 'yandex-lavka' },
+  'Альфа-Банк': { emoji: '🏦', slug: 'alfa-bank' },
+  'Qlean': { emoji: '🧹', slug: 'qlean' },
+};
+for (const o of offers) {
+  if (!companyMap.has(o.company)) {
+    const meta = COMPANY_META[o.company] ?? { emoji: '💼', slug: o.company.toLowerCase().replace(/\s+/g, '-') };
+    companyMap.set(o.company, { name: o.company, emoji: meta.emoji, slug: meta.slug, offers: [] });
+  }
+  companyMap.get(o.company)!.offers.push(o);
+}
+const companies = [...companyMap.values()];
+const catalogOffers = groupOffers(offers);
+
+const testimonials = [
+  {
+    name: 'Дмитрий',
+    role: 'Курьер · 1 год',
+    text: 'Вышел на первую смену уже на следующий день после отклика. График строю сам, выплаты каждую неделю — всё прозрачно и по договору.',
+    initials: 'ДК',
+    hue: 232,
+  },
+  {
+    name: 'Анна',
+    role: 'Кладовщик · 8 месяцев',
+    text: 'Перешла по ссылке, оформили официально, выдали спецодежду. Склад оказался в 15 минутах от дома — это решает, когда есть дети.',
+    initials: 'АС',
+    hue: 21,
+  },
+  {
+    name: 'Сергей',
+    role: 'Водитель категории C · 2 года',
+    text: 'Откликнулся через сайт за пять минут, через неделю уже был на маршруте. Машина компании, стабильная загрузка — доход предсказуемый.',
+    initials: 'СВ',
+    hue: 152,
+  },
+];
+---
+
+<BaseLayout
+  title={site.tagline}
+  description={`${site.tagline}. Бесплатный отклик, ежедневные выплаты, работа без опыта. Переходы по партнёрским ссылкам.`}
+>
+  <Hero />
+
+  <!-- Каталог -->
+  <section id="catalog" class="section section-alt">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="kicker">Каталог</span>
+        <h2 style="line-height:1.2">
+          Работа <span class="rotating-word" data-rotate>курьером</span><br />
+          по всей России
+        </h2>
+        <p>Яндекс Еда, Альфа-Банк и другие работодатели: переходите по ссылке и выходите на первые заказы. Ищите и откликайтесь — всё работает мгновенно.</p>
+      </div>
+
+      <div class="catalog-toolbar reveal">
+        <div class="filter-chips" role="tablist" aria-label="Фильтр по категориям">
+          <button class="chip active" data-filter="all" type="button">Все</button>
+          {OFFER_CATEGORIES.map((c) => <button class="chip" data-filter={c} type="button">{c}</button>)}
+        </div>
+        <span class="catalog-count" data-count></span>
+      </div>
+
+      <div class="offers-grid">
+        {catalogOffers.map((offer) => <OfferCard offer={offer} />)}
+      </div>
+
+      <div class="empty-state" data-empty>
+        <div class="es-ico">🔍</div>
+        <p>По запросу ничего не нашлось. Попробуйте «курьер» или «Еда».</p>
+      </div>
+      <p class="catalog-ad-note">Реклама · переходы по партнёрским (реферальным) ссылкам{site.erid ? ` · erid: ${site.erid}` : ''}</p>
+    </div>
+  </section>
+
+  <!-- Как это работает -->
+  <section id="steps" class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="kicker">Просто</span>
+        <h2>Как это работает</h2>
+        <p>Три шага до первой выплаты — без собеседований и бюрократии</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card reveal">
+          <div class="step-num">1</div>
+          <h3>Выберите профессию</h3>
+          <p>Курьер, водитель, кладовщик — открывайте страницу нужного направления в каталоге.</p>
+        </div>
+        <div class="step-card reveal">
+          <div class="step-num">2</div>
+          <h3>Перейдите по ссылке</h3>
+          <p>Вы попадёте на сайт партнёра-работодателя и оставите отклик за пару минут. Это бесплатно.</p>
+        </div>
+        <div class="step-card reveal">
+          <div class="step-num">3</div>
+          <h3>Выходите на смену</h3>
+          <p>Пройдите оформление — и получайте выплаты: ежедневно, еженедельно или два раза в месяц.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Преимущества -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="kicker">Почему мы</span>
+        <h2>Работа, которой можно доверять</h2>
+      </div>
+      <div class="benefits-grid">
+        <div class="benefit-card reveal">
+          <div class="benefit-ico">🆓</div>
+          <h3>Бесплатно для вас</h3>
+          <p>Соискатели не платят ни за отклик, ни за оформление. Сайт работает по партнёрским программам работодателей.</p>
+        </div>
+        <div class="benefit-card reveal">
+          <div class="benefit-ico">⚡</div>
+          <h3>Быстрое оформление</h3>
+          <p>Многие компании принимают без собеседования — по паспорту и СНИЛС, обучение на месте.</p>
+        </div>
+        <div class="benefit-card reveal">
+          <div class="benefit-ico">💰</div>
+          <h3>Прозрачные выплаты</h3>
+          <p>Зарплата по договору: ежедневно, еженедельно или два раза в месяц. Никаких «серых» схем.</p>
+        </div>
+        <div class="benefit-card reveal">
+          <div class="benefit-ico">📍</div>
+          <h3>Рядом с домом</h3>
+          <p>На сайтах партнёров можно отфильтровать вакансии по району и выбрать точку рядом с домом.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Статистика -->
+  <section class="section" style="padding-top: 48px;">
+    <div class="container">
+      <div class="stats-band reveal">
+        <div class="stat"><b>{professions.length}+</b><span>профессий в каталоге</span></div>
+        <div class="stat"><b>1000+</b><span>вакансий каждый день</span></div>
+        <div class="stat"><b>24/7</b><span>отклик и оформление онлайн</span></div>
+        <div class="stat"><b>98%</b><span>выходят на первую смену</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Отзывы -->
+  <section id="reviews" class="section section-alt">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="kicker">Отзывы</span>
+        <h2>Кто уже работает</h2>
+        <p>Реальные истории тех, кто нашёл работу через наш каталог</p>
+      </div>
+      <div class="testimonials-grid">
+        {
+          testimonials.map((t) => (
+            <div class="testimonial reveal">
+              <div class="stars" aria-label="5 из 5">★★★★★</div>
+              <p>«{t.text}»</p>
+              <div class="testimonial-author">
+                <div class="t-avatar" style={`background:linear-gradient(135deg, hsl(${t.hue} 70% 55%), hsl(${(t.hue + 40) % 360} 70% 45%))`}>{t.initials}</div>
+                <div>
+                  <div class="t-name">{t.name}</div>
+                  <div class="t-role">{t.role}</div>
+                </div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="kicker">FAQ</span>
+        <h2>Частые вопросы</h2>
+        <p>Коротко о главном — перед тем как откликнуться</p>
+      </div>
+      <div class="faq-list">
+        {
+          faqItems.map((item) => (
+            <details class="faq-item reveal">
+              <summary>{item.q}</summary>
+              <div class="faq-answer">{item.a}</div>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Работодатели -->
+  <section id="employers" class="section section-alt">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="kicker">Работодатели</span>
+        <h2>Компании, которые нанимают</h2>
+        <p>Прямые вакансии от известных брендов — оформление онлайн по ссылке</p>
+      </div>
+      <div class="companies-grid">
+        {
+          companies.map((c) => (
+            <a class="company-card reveal" href={`/company/${c.slug}/`}>
+              <div class="company-logo" aria-hidden="true">{c.emoji}</div>
+              <div class="company-info">
+                <h3>{c.name}</h3>
+                <span>{groupOffers(c.offers).length} {groupOffers(c.offers).length === 1 ? 'вакансия' : 'вакансий'} →</span>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Города -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="kicker">Города</span>
+        <h2>Работа рядом с вами</h2>
+        <p>Выберите город — предложения и профессии, доступные именно там</p>
+      </div>
+      <div class="city-grid">
+        {
+          topCities.map((c) => (
+            <a class="city-tile reveal" href={`/${c.slug}/`}>
+              <b>{c.name}</b>
+              <span>предложения и профессии →</span>
+            </a>
+          ))
+        }
+      </div>
+      <div class="city-more">
+        <a href="/cities/" class="btn btn-outline btn-lg">Смотреть все {cities.length} городов</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section" style="padding-top: 0;">
+    <div class="container">
+      <div class="cta-band reveal">
+        <h2>Не знаете, с чего начать?</h2>
+        <p>Начните с «{professions[0].title}» — это самый быстрый способ начать зарабатывать уже завтра.</p>
+        <a href={`/${professions[0].slug}/`} class="btn btn-white btn-lg">Смотреть вакансии {professions[0].title}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

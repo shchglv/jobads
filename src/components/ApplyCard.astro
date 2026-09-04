@@ -1,0 +1,38 @@
+---
+import type { Profession } from '../data/types';
+import { isLiveLink, site } from '../data/professions';
+
+interface Props {
+  job: Profession;
+}
+
+const { job } = Astro.props;
+const liveLinks = job.links.filter((l) => isLiveLink(l.url));
+---
+
+<aside class="prof-aside">
+  <div class="apply-card">
+    <div class="apply-ad">Реклама · партнёрская ссылка{site.erid ? ` · erid: ${site.erid}` : ''}</div>
+    <h3>Хочу работать {job.title_ins}</h3>
+    <p>Выберите площадку — вы перейдёте на сайт партнёра и оставите отклик за 2 минуты. Это бесплатно.</p>
+    {
+      liveLinks.length > 0
+        ? liveLinks.map((link) => (
+          <a class="apply-link" href={link.url} target="_blank" rel="noopener nofollow">
+            <span>🎯 {link.name}</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        ))
+        : <p class="apply-note" style="margin:0;padding:12px 14px;background:rgba(255,255,255,.12);border-radius:10px">Ссылка на отклик появится скоро — работодатель подключается к каталогу.</p>
+    }
+    <p class="apply-note">Переход осуществляется по партнёрской (реферальной) ссылке</p>
+  </div>
+
+  <div class="info-card">
+    <h4>Кратко о вакансии</h4>
+    <div class="info-row"><span>Заработок</span><b>{job.salary}</b></div>
+    <div class="info-row"><span>Опыт</span><b>{job.experience}</b></div>
+    <div class="info-row"><span>График</span><b>{job.schedule}</b></div>
+    <div class="info-row"><span>Город</span><b>{job.geo ?? 'Вся Россия'}</b></div>
+  </div>
+</aside>
