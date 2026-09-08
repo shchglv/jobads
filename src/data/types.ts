@@ -39,6 +39,7 @@ export interface Profession {
   benefits: string[];
   faq: FaqItem[];
   links: { name: string; url: string }[];
+  intents?: { h: string; p: string }[];
   hue?: number;
   category?: string;
   geo?: string;

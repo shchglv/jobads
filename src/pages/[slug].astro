@@ -122,6 +122,22 @@ const jsonld = JSON.stringify({
           </ul>
         </section>
 
+        {
+          job.intents && job.intents.length > 0 && (
+            <section class="prof-block reveal">
+              <h2><span class="h-ico">🎯</span>Под какие задачи подойдёт</h2>
+              <div class="intent-grid">
+                {job.intents.map((it) => (
+                  <div class="intent-card">
+                    <b>{it.h}</b>
+                    <p>{it.p}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )
+        }
+
         <section class="prof-block reveal">
           <h2><span class="h-ico">❓</span>Частые вопросы</h2>
           <div class="faq-list" style="max-width:none">
