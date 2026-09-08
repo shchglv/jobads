@@ -535,6 +535,19 @@ html[data-theme='dark'] .badge-top { color: var(--gold); }
 
 /* ---------- FAQ ---------- */
 .faq-list { max-width: 780px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+
+/* ---------- Интент-карточки (страница услуги) ---------- */
+.intent-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 14px; margin-top: 6px;
+}
+.intent-card {
+  background: var(--bg); border: 1px solid var(--line);
+  border-radius: 14px; padding: 18px;
+}
+.intent-card b { font-size: .98rem; display: block; margin-bottom: 6px; }
+.intent-card p { color: var(--muted); font-size: .88rem; margin: 0; }
+.intent-card:hover { border-color: color-mix(in srgb, var(--brand) 40%, var(--line)); }
 .faq-item {
   background: var(--surface); border: 1px solid var(--line);
   border-radius: var(--radius); overflow: hidden;
@@ -869,3 +882,58 @@ html[data-theme='dark'] .site-footer { background: #070a14; }
 .empty-state.is-visible { display: block; }
 .empty-state .es-ico { font-size: 2.6rem; margin-bottom: 10px; }
 .catalog-ad-note { margin-top: 18px; text-align: center; font-size: .78rem; color: var(--muted); }
+
+/* ---------- Промо-баннер NETWRK ---------- */
+.netwrk-banner { padding: 0 0 72px; }
+.nb-card {
+  position: relative; overflow: hidden;
+  border-radius: 24px;
+  background: linear-gradient(115deg, #134e4a 0%, #0f766e 45%, #0e7490 100%);
+  color: #fff;
+  display: grid; grid-template-columns: 1.4fr .6fr; gap: 20px;
+  padding: 44px 48px;
+}
+.nb-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(600px 300px at 85% 20%, rgba(255,255,255,.14), transparent 60%);
+  pointer-events: none;
+}
+.nb-content { position: relative; z-index: 1; }
+.nb-tag {
+  display: inline-block; font-size: .78rem; font-weight: 700; letter-spacing: .05em;
+  text-transform: uppercase; background: rgba(255,255,255,.15);
+  padding: 6px 14px; border-radius: 999px; margin-bottom: 16px;
+}
+.nb-card h2 { font-size: 1.9rem; line-height: 1.2; margin-bottom: 12px; }
+.nb-card p { opacity: .92; max-width: 560px; margin-bottom: 16px; }
+.nb-points { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px; }
+.nb-points li { display: flex; gap: 10px; align-items: flex-start; font-size: .95rem; }
+.nb-points li::before { content: '✓'; font-weight: 800; color: #8bffb0; flex-shrink: 0; }
+.nb-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn-light { background: #fff; color: #0f766e; }
+.btn-light:hover { background: #ccfbf1; transform: translateY(-1px); }
+.btn-light-ghost { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,.45); }
+.btn-light-ghost:hover { border-color: #fff; }
+.nb-visual { position: relative; z-index: 1; display: grid; place-items: center; }
+.nb-doc {
+  position: relative; width: 230px; padding: 26px 22px;
+  background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22);
+  border-radius: 16px; backdrop-filter: blur(4px);
+  display: flex; flex-direction: column; gap: 10px;
+  transform: rotate(3deg);
+}
+.nb-doc-line { height: 10px; border-radius: 6px; background: rgba(255,255,255,.35); display: block; }
+.nb-doc-line.w70 { width: 70%; } .nb-doc-line.w90 { width: 90%; }
+.nb-doc-line.w60 { width: 60%; } .nb-doc-line.w80 { width: 80%; }
+.nb-doc-line.good { background: #8bffb0; }
+.nb-score {
+  margin-top: 8px; font-size: 2.4rem; font-weight: 800; line-height: 1;
+  background: linear-gradient(90deg, #8bffb0, #fff); -webkit-background-clip: text;
+  background-clip: text; color: transparent;
+}
+.nb-score span { font-size: 1rem; font-weight: 600; opacity: .8; }
+@media (max-width: 860px) {
+  .nb-card { grid-template-columns: 1fr; padding: 32px 24px; }
+  .nb-visual { display: none; }
+  .nb-card h2 { font-size: 1.5rem; }
+}
