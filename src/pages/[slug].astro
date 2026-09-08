@@ -43,6 +43,10 @@ const jsonld = JSON.stringify({
       <span>{job.title}</span>
     </nav>
 
+    <div class="prof-banner reveal">
+      <img class="prof-banner-img" src={`/covers/${job.slug}.jpg`} alt="" width="1344" height="768" />
+    </div>
+
     <header class="prof-header reveal">
       <div class="prof-logo" style={`background:linear-gradient(135deg, hsl(${job.hue} 70% 60%), hsl(${(job.hue + 40) % 360} 70% 50%))`} aria-hidden="true">{job.emoji}</div>
       <div class="prof-title">

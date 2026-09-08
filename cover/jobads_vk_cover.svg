@@ -1,0 +1,169 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="768" viewBox="0 0 1920 768">
+  <defs>
+    <!-- Фон: фирменный синий ВК -> фирменный сине-фиолетовый JobAds -->
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0077FF"/>
+      <stop offset="0.52" stop-color="#2F5BF6"/>
+      <stop offset="1" stop-color="#7C3AED"/>
+    </linearGradient>
+    <!-- Градиент для главного заголовка -->
+    <linearGradient id="tgrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#D9EDFF"/>
+    </linearGradient>
+    <!-- Градиент логотипа JobAds (как в favicon) -->
+    <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2f5bf6"/>
+      <stop offset="1" stop-color="#7c3aed"/>
+    </linearGradient>
+    <!-- Мягкие свечения -->
+    <radialGradient id="glowW" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowP" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FF9EC9" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#FF9EC9" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowC" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#00E5FF" stop-opacity="0.4"/>
+      <stop offset="1" stop-color="#00E5FF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- ============ ФОН ============ -->
+  <rect width="1920" height="768" fill="url(#bg)"/>
+
+  <!-- Свечения -->
+  <circle cx="1420" cy="150" r="430" fill="url(#glowW)"/>
+  <circle cx="1780" cy="640" r="460" fill="url(#glowP)"/>
+  <circle cx="1760" cy="160" r="330" fill="url(#glowC)" opacity="0.6"/>
+  <circle cx="200" cy="200" r="300" fill="url(#glowC)" opacity="0.35"/>
+
+  <!-- Плавающие декоративные круги -->
+  <g fill="#FFFFFF">
+    <circle cx="60" cy="300" r="16" opacity="0.08"/>
+    <circle cx="1030" cy="150" r="20" opacity="0.07"/>
+    <circle cx="1560" cy="64" r="18" opacity="0.08"/>
+    <circle cx="1885" cy="300" r="46" opacity="0.07"/>
+    <circle cx="1880" cy="530" r="30" opacity="0.08"/>
+    <circle cx="1030" cy="716" r="30" opacity="0.07"/>
+    <circle cx="70" cy="650" r="64" opacity="0.08"/>
+    <circle cx="1500" cy="46" r="12" opacity="0.1"/>
+    <rect x="1840" y="120" width="26" height="26" rx="8" opacity="0.08"/>
+  </g>
+
+  <!-- ============ ВОЛНА (мотив логотипа ВК), низ справа ============ -->
+  <g fill="#FFFFFF" opacity="0.13">
+    <rect x="1560" y="638" width="58" height="130" rx="29"/>
+    <rect x="1638" y="538" width="58" height="230" rx="29"/>
+    <rect x="1716" y="603" width="58" height="165" rx="29"/>
+  </g>
+
+  <!-- ============ ЛЕВАЯ КОЛОНКА ============ -->
+  <g font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif">
+
+    <!-- Бренд: логотип JobAds + имя -->
+    <rect x="90" y="90" width="64" height="64" rx="18" fill="url(#lg)"/>
+    <g stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <rect x="106" y="112" width="32" height="19" rx="4.5"/>
+      <path d="M114 112 v-4.5 a7 7 0 0 1 14 0 v4.5"/>
+      <line x1="122" y1="112" x2="122" y2="131"/>
+    </g>
+    <text x="172" y="134" font-size="31" font-weight="800" letter-spacing="3" fill="#FFFFFF">JOBADS.RU</text>
+
+    <!-- Кникер -->
+    <rect x="90" y="202" width="560" height="52" rx="26" fill="#FFFFFF" opacity="0.16"/>
+    <text x="118" y="237" font-size="17" font-weight="700" letter-spacing="1.5" fill="#EAF4FF">АГРЕГАТОР ВАКАНСИЙ · ВСЯ РОССИЯ</text>
+
+    <!-- Главный заголовок -->
+    <text x="90" y="405" font-size="128" font-weight="900" letter-spacing="-1" fill="url(#tgrad)">Работа рядом</text>
+
+    <!-- Мини-волна под заголовком -->
+    <g fill="#FFFFFF" opacity="0.95">
+      <rect x="92" y="486" width="22" height="30" rx="11"/>
+      <rect x="124" y="464" width="22" height="52" rx="11"/>
+      <rect x="156" y="486" width="22" height="30" rx="11"/>
+    </g>
+
+    <!-- Подзаголовок -->
+    <text x="90" y="566" font-size="26" font-weight="500" letter-spacing="0.2" fill="#E6F2FF">От курьера до IT — свежие вакансии в твоём городе</text>
+
+    <!-- CTA -->
+    <rect x="90" y="600" width="460" height="60" rx="30" fill="#FFFFFF"/>
+    <text x="320" y="640" font-size="25" font-weight="700" text-anchor="middle" fill="#0077FF">Смотреть вакансии</text>
+    <circle cx="516" cy="630" r="17" fill="#EAF3FF"/>
+    <path d="M509.5 622.5 L517 630 L509.5 637.5" stroke="#0077FF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </g>
+
+  <!-- ============ ПРАВАЯ КОЛОНКА: карточка-мокап вакансий ============ -->
+  <!-- Тень-подложка карточки -->
+  <ellipse cx="1332" cy="684" rx="255" ry="22" fill="#0F2F6B" opacity="0.14"/>
+
+  <g font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif">
+    <!-- Карточка -->
+    <rect x="1135" y="120" width="395" height="560" rx="28" fill="#FFFFFF"/>
+
+    <!-- Заголовок карточки -->
+    <text x="1159" y="166" font-size="26" font-weight="800" fill="#1B1F23">Свежие вакансии</text>
+
+    <!-- Строка поиска -->
+    <rect x="1159" y="188" width="347" height="44" rx="12" fill="#F0F2F5"/>
+    <circle cx="1188" cy="210" r="8.5" stroke="#99A2AD" stroke-width="2.5" fill="none"/>
+    <line x1="1195" y1="217" x2="1200.5" y2="222.5" stroke="#99A2AD" stroke-width="2.5" stroke-linecap="round"/>
+    <text x="1212" y="216" font-size="16" font-weight="500" fill="#99A2AD">Найти вакансию</text>
+
+    <!-- Вакансии -->
+    <!-- 1. Продавец -->
+    <rect x="1159" y="246" width="347" height="104" rx="18" fill="#F4F6F9"/>
+    <circle cx="1185" cy="298" r="26" fill="#E8F3FF"/>
+    <g stroke="#0077FF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <rect x="1176.5" y="290" width="17" height="12.5" rx="3"/>
+      <path d="M1181 290 v-3.4 a4.2 4.2 0 0 1 8.4 0 v3.4"/>
+    </g>
+    <text x="1227" y="292" font-size="20" font-weight="700" fill="#1B1F23">Продавец</text>
+    <text x="1227" y="325" font-size="14" font-weight="500" fill="#818C99">супермаркет · 700 м</text>
+    <rect x="1384" y="280" width="122" height="36" rx="18" fill="#EAF3FF"/>
+    <text x="1445" y="303" font-size="14" font-weight="700" text-anchor="middle" fill="#0077FF">от 45 000 ₽</text>
+
+    <!-- 2. Курьер -->
+    <rect x="1159" y="362" width="347" height="104" rx="18" fill="#F4F6F9"/>
+    <circle cx="1185" cy="414" r="26" fill="#E8F3FF"/>
+    <g stroke="#0077FF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <rect x="1177" y="407" width="16" height="13" rx="2.5"/>
+      <line x1="1185" y1="407" x2="1185" y2="420"/>
+      <line x1="1177" y1="413.5" x2="1193" y2="413.5"/>
+    </g>
+    <text x="1227" y="408" font-size="20" font-weight="700" fill="#1B1F23">Курьер</text>
+    <text x="1227" y="441" font-size="14" font-weight="500" fill="#818C99">пункт выдачи · 1,2 км</text>
+    <rect x="1384" y="396" width="122" height="36" rx="18" fill="#EAF3FF"/>
+    <text x="1445" y="419" font-size="14" font-weight="700" text-anchor="middle" fill="#0077FF">от 90 000 ₽</text>
+
+    <!-- 3. Водитель -->
+    <rect x="1159" y="478" width="347" height="104" rx="18" fill="#F4F6F9"/>
+    <circle cx="1185" cy="530" r="26" fill="#E8F3FF"/>
+    <g stroke="#0077FF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <circle cx="1185" cy="530" r="8"/>
+      <line x1="1185" y1="530" x2="1185" y2="522"/>
+      <line x1="1185" y1="530" x2="1185" y2="522" transform="rotate(120 1185 530)"/>
+      <line x1="1185" y1="530" x2="1185" y2="522" transform="rotate(240 1185 530)"/>
+    </g>
+    <text x="1227" y="524" font-size="20" font-weight="700" fill="#1B1F23">Водитель</text>
+    <text x="1227" y="557" font-size="14" font-weight="500" fill="#818C99">автопарк · 2,4 км</text>
+    <rect x="1384" y="512" width="122" height="36" rx="18" fill="#EAF3FF"/>
+    <text x="1445" y="535" font-size="14" font-weight="700" text-anchor="middle" fill="#0077FF">от 75 000 ₽</text>
+
+    <!-- Кнопка в карточке -->
+    <rect x="1159" y="598" width="347" height="48" rx="14" fill="#0077FF"/>
+    <text x="1332" y="630" font-size="17" font-weight="700" text-anchor="middle" fill="#FFFFFF">Открыть jobads.ru</text>
+  </g>
+
+  <!-- Плавающий бейдж -->
+  <rect x="1210" y="76" width="320" height="46" rx="23" fill="#FFFFFF" opacity="0.96"/>
+  <g transform="translate(1250, 99)">
+    <circle cy="-3" r="8" fill="#0077FF"/>
+    <circle cy="-3" r="3.2" fill="#FFFFFF"/>
+    <path d="M-5.5 2.5 L5.5 2.5 L0 12 Z" fill="#0077FF"/>
+  </g>
+  <text x="1385" y="107" font-size="20" font-weight="700" text-anchor="middle" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" fill="#0077FF">226 городов России</text>
+</svg>

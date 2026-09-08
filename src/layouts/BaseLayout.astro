@@ -27,6 +27,7 @@ const pageTitle = title ? `${title} | ${site.name}` : `${site.name} — ${site.t
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
+    <meta name="yandex-verification" content="d2b567611cb3b498" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#0b0f1e" />
     <meta property="og:type" content="website" />
@@ -35,6 +36,20 @@ const pageTitle = title ? `${title} | ${site.name}` : `${site.name} — ${site.t
     {
       jsonld && <Fragment set:html={jsonld} />
     }
+    <script is:inline>
+      (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+      })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=112328024', 'ym');
+      ym(112328024, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:'dataLayer', referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+    </script>
+    <noscript>
+      <div>
+        <img src="https://mc.yandex.ru/watch/112328024" style="position:absolute; left:-9999px;" alt="" />
+      </div>
+    </noscript>
   </head>
   <body data-city-name={cityName ?? ''}>
     <Header />

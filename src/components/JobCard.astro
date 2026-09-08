@@ -12,6 +12,10 @@ const gradient = `linear-gradient(135deg, hsl(${job.hue} 70% 60%), hsl(${(job.hu
 ---
 
 <article class="job-card reveal" data-job data-category={job.category} data-search={`${job.title} ${job.short} ${job.category}`}>
+  <div class="job-cover-wrap">
+    <img class="job-cover" src={`/covers/${job.slug}.jpg`} alt="" loading="lazy" width="1344" height="768" />
+  </div>
+  <div class="job-card-body">
   <div class="job-card-top">
     <div class="job-logo" style={`background:${gradient}`} aria-hidden="true">{job.emoji}</div>
     {
@@ -48,5 +52,6 @@ const gradient = `linear-gradient(135deg, hsl(${job.hue} 70% 60%), hsl(${(job.hu
         <a class="job-apply" href={job.links.find((l) => isLiveLink(l.url))!.url} target="_blank" rel="noopener nofollow">Откликнуться ↗</a>
       )
     }
+  </div>
   </div>
 </article>
